@@ -1,19 +1,42 @@
 "use client"
 
 import { useState } from "react"
-import { MapPin, Phone, ExternalLink, X } from "lucide-react"
+import { MapPin, Phone, ExternalLink, X, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
 export function GoogleMapsEmbed() {
   const [showModal, setShowModal] = useState(false)
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+
+  // Fallback if API key is not available
+  if (!apiKey) {
+    return (
+      <div className="rounded-xl overflow-hidden h-[400px] relative bg-gray-800 flex items-center justify-center">
+        <div className="text-center text-gray-300">
+          <AlertCircle className="h-12 w-12 mx-auto mb-4 text-yellow-500" />
+          <p className="mb-2">Google Maps integration requires an API key</p>
+          <Button className="bg-primary text-black hover:bg-primary/90" asChild>
+            <Link
+              href="https://maps.google.com/?q=4045+S+CHERRY+AVE,+FRESNO,+CA,+93706"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <ExternalLink className="mr-2 h-4 w-4" />
+              View on Google Maps
+            </Link>
+          </Button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <>
       <div className="rounded-xl overflow-hidden h-[400px] relative">
         {/* Google Maps Embed */}
         <iframe
-          src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBKv8w8T-0VohKmGTGsUgnKo8dZ71IzcPg&q=4045+S+CHERRY+AVE,+FRESNO,+CA,+93706&zoom=15`}
+          src={`https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=4045+S+CHERRY+AVE,+FRESNO,+CA,+93706&zoom=15`}
           width="100%"
           height="100%"
           style={{ border: 0 }}
