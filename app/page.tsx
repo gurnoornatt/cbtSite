@@ -7,7 +7,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { NewsletterSignup } from "@/components/newsletter-signup"
+
 import { ContactForm } from "@/components/contact-form"
 import { PricingCard } from "@/components/pricing-card"
 import { GoogleMapsEmbed } from "@/components/google-maps-embed"
@@ -365,16 +365,15 @@ export default function Home() {
                     ))}
                   </div>
                   <p className="text-gray-300 mb-4">
-                    "I went from zero truck experience to passing my CDL on the first try. The instructors really care
-                    about your success, and the one-on-one training made all the difference."
+                    "Awesome driving school. Came in having never drove a semi before and very little experience backing up a trailer. Stayed for a few weeks and passed the dmv driving test first try. Highly recommend!! They work with your schedule!!"
                   </p>
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-                      <span className="text-black font-medium">MR</span>
+                      <span className="text-black font-medium">G</span>
                     </div>
                     <div>
-                      <p className="font-medium">Maria Rodriguez</p>
-                      <p className="text-sm text-gray-400">Class A Graduate</p>
+                      <p className="font-medium">Garry</p>
+                      <p className="text-sm text-gray-400">2 years ago</p>
                     </div>
                   </div>
                 </CardContent>
@@ -388,39 +387,37 @@ export default function Home() {
                     ))}
                   </div>
                   <p className="text-gray-300 mb-4">
-                    "Central helped me change my career completely. I now earn more than I ever did in my previous job,
-                    and I love being on the road. The job placement assistance was incredible."
-                  </p>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-                      <span className="text-black font-medium">DT</span>
-                    </div>
-                    <div>
-                      <p className="font-medium">David Thompson</p>
-                      <p className="text-sm text-gray-400">Class A Graduate</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-white/5 backdrop-blur-md border-white/10">
-                <CardContent className="p-6">
-                  <div className="flex gap-1 mb-4">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 fill-primary text-primary" />
-                    ))}
-                  </div>
-                  <p className="text-gray-300 mb-4">
-                    "The flexible scheduling worked perfectly with my current job. I was able to train in the evenings
-                    and weekends, and still got the full quality training experience."
+                    "Had the best experience in learning how to drive a truck and really helpful and knowledgeable in all fields of getting a commercial license, would definitely recommend all women and men in coming and getting your license from them. Very professional and speak Punjabi, Hindi and English. Also offer truck repairs, it's like one stop shop for all your needs."
                   </p>
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
                       <span className="text-black font-medium">SK</span>
                     </div>
                     <div>
-                      <p className="font-medium">Sarah Kim</p>
-                      <p className="text-sm text-gray-400">Class B Graduate</p>
+                      <p className="font-medium">Sandy Kaur</p>
+                      <p className="text-sm text-gray-400">2 years ago</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-white/5 backdrop-blur-md border-white/10">
+                <CardContent className="p-6">
+                  <div className="flex gap-1 mb-4">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-5 w-5 fill-primary text-primary" />
+                    ))}
+                  </div>
+                  <p className="text-gray-300 mb-4">
+                    "I went to this Bus and Truck School to get my CDL license. I recommend this school because it's well detailed oriented from Inspection Part A, Part B and Part C. As well Coupling System. It's a Manual or Automatic transmission Trucks available, whatever you want. I got my CDL with Manual Transmission. Not restrictions on my driver license! It's a personalized learning. You will get what you need in order to get the commercial license. It was a positive experience to me going to this driving school. Thanks A-1, my instructor."
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+                      <span className="text-black font-medium">RF</span>
+                    </div>
+                    <div>
+                      <p className="font-medium">Raul Funes</p>
+                      <p className="text-sm text-gray-400">2 years ago</p>
                     </div>
                   </div>
                 </CardContent>
@@ -442,13 +439,6 @@ export default function Home() {
 
         {/* FAQ Section */}
         <FAQSection />
-
-        {/* Newsletter Section */}
-        <section className="py-16 bg-gray-950">
-          <div className="container">
-            <NewsletterSignup />
-          </div>
-        </section>
 
         {/* CTA Section */}
         <section className="py-16 bg-primary/10">
