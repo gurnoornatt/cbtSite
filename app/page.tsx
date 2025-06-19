@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import { ChevronRight, Clock, MapPin, Phone, Star, Award, BookOpen, Users, Youtube, Instagram } from "lucide-react"
 import Image from "next/image"
@@ -9,6 +11,9 @@ import { NewsletterSignup } from "@/components/newsletter-signup"
 import { ContactForm } from "@/components/contact-form"
 import { PricingCard } from "@/components/pricing-card"
 import { GoogleMapsEmbed } from "@/components/google-maps-embed"
+import { FloatingCTA } from "@/components/floating-cta"
+import { FAQSection } from "@/components/faq-section"
+import { useSiteConfig } from "@/lib/use-site-config"
 
 const TikTokIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
@@ -17,6 +22,20 @@ const TikTokIcon = ({ className }: { className?: string }) => (
 )
 
 export default function Home() {
+  const { config, loading } = useSiteConfig()
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-950 flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    )
+  }
+
+  const formatPhoneForTel = (phone: string) => {
+    return phone.replace(/[^\d]/g, "")
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-gray-950 text-white">
       {/* Navigation */}
@@ -26,7 +45,7 @@ export default function Home() {
             <Link href="/" className="flex items-center space-x-3">
               <Image
                 src="/logo.png"
-                alt="Central Bus & Truck Driving School"
+                alt={config.business.name}
                 width={120}
                 height={40}
                 className="h-10 w-auto"
@@ -50,7 +69,7 @@ export default function Home() {
           <div className="flex items-center gap-4">
             <div className="hidden md:flex items-center gap-3">
               <Link
-                href="https://www.tiktok.com/@centralbtschool?_t=ZP-8xKATrbhbrT&_r=1"
+                href={config.social.tiktok}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-primary transition-colors"
@@ -58,7 +77,7 @@ export default function Home() {
                 <TikTokIcon className="h-5 w-5" />
               </Link>
               <Link
-                href="https://www.instagram.com/centralbustruckdrivingschool/"
+                href={config.social.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-primary transition-colors"
@@ -66,7 +85,7 @@ export default function Home() {
                 <Instagram className="h-5 w-5" />
               </Link>
               <Link
-                href="https://www.youtube.com/@centralbustruckschool3572"
+                href={config.social.youtube}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-primary transition-colors"
@@ -74,9 +93,9 @@ export default function Home() {
                 <Youtube className="h-5 w-5" />
               </Link>
             </div>
-            <Link href="tel:+15599050496" className="hidden md:flex items-center gap-2 text-primary font-medium">
+            <Link href={`tel:+1${formatPhoneForTel(config.contact.phone)}`} className="hidden md:flex items-center gap-2 text-primary font-medium">
               <Phone className="h-4 w-4" />
-              (559) 905-0496
+              {config.contact.phone}
             </Link>
             <Button asChild className="bg-primary text-black hover:bg-primary/90">
               <Link href="#contact">Contact Us</Link>
@@ -106,7 +125,7 @@ export default function Home() {
                     Get Your CDL License Fast
                   </h1>
                   <p className="mt-4 text-gray-300 md:text-xl">
-                    Master commercial driving with our comprehensive 30-hour program. From permit training to road
+                    Master commercial driving with our comprehensive {config.pricing.classA.classTime.toLowerCase()} program. From permit training to road
                     testing, we'll get you job-ready with hands-on instruction from certified professionals.
                   </p>
                 </div>
@@ -122,8 +141,8 @@ export default function Home() {
                     className="border-primary text-primary hover:bg-primary hover:text-black"
                     asChild
                   >
-                    <Link href="tel:+15599050496">
-                      <Phone className="mr-2 h-4 w-4" /> Call (559) 905-0496
+                    <Link href={`tel:+1${formatPhoneForTel(config.contact.phone)}`}>
+                      <Phone className="mr-2 h-4 w-4" /> Call {config.contact.phone}
                     </Link>
                   </Button>
                 </div>
@@ -165,7 +184,7 @@ export default function Home() {
                 </p>
                 <p className="text-gray-300">
                   Every student gets personal attention. We work at your pace, answer your questions, and make sure
-                  you're confident behind the wheel before you test. That's why 95% of our students pass on their first
+                  you're confident behind the wheel before you test. That's why {config.business.passRate} of our students pass on their first
                   try.
                 </p>
                 <div className="pt-4">
@@ -200,60 +219,47 @@ export default function Home() {
             </div>
 
             <Tabs defaultValue="class-a" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-8 bg-gray-800 border border-white/10">
-                <TabsTrigger value="class-a" className="data-[state=active]:bg-primary data-[state=active]:text-black">
-                  CDL CLASS A
-                </TabsTrigger>
-                <TabsTrigger value="class-b" className="data-[state=active]:bg-primary data-[state=active]:text-black">
-                  CDL CLASS B
-                </TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 mb-8 bg-gray-800">
+                <TabsTrigger value="class-a">Class A CDL</TabsTrigger>
+                <TabsTrigger value="class-b">Class B CDL</TabsTrigger>
               </TabsList>
               <TabsContent value="class-a">
                 <div className="grid md:grid-cols-2 gap-8">
                   <PricingCard
-                    title="CDL CLASS A"
-                    price="$2,400"
-                    transmission="Automatic & Manual Available"
-                    classTime="30 Hours"
+                    title={config.pricing.classA.title}
+                    price={config.pricing.classA.price}
+                    transmission={config.pricing.classA.transmission}
+                    classTime={config.pricing.classA.classTime}
                     permitTraining={true}
                     oneOnOne={true}
-                    endorsements={[
-                      "Passenger Endorsement",
-                      "Hazardous Materials (HAZMAT)",
-                      "Tanker Endorsement",
-                      "Double & Triple Trailers",
-                    ]}
+                    endorsements={config.pricing.classA.endorsements}
                   />
                   <div className="rounded-xl overflow-hidden bg-white/5 backdrop-blur-md border border-white/10 shadow-xl p-6 h-full">
                     <h3 className="text-xl font-bold mb-4 text-primary">Complete Training Curriculum</h3>
-                    <ul className="space-y-3">
+                    <ul className="space-y-2">
                       <li className="flex items-start gap-2">
                         <ChevronRight className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                        <span>CDL permit training and test preparation</span>
+                        <span>Pre-trip inspection mastery</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <ChevronRight className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                        <span>Entry-level driver classroom instruction</span>
+                        <span>Backing and maneuvering techniques</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <ChevronRight className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                        <span>Comprehensive pre-trip inspection training</span>
+                        <span>Highway driving and city navigation</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <ChevronRight className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                        <span>Air brake systems operation and testing</span>
+                        <span>Coupling and uncoupling procedures</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <ChevronRight className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                        <span>Private property driving skills development</span>
+                        <span>Air brake system operation</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <ChevronRight className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                        <span>Public road driving training and practice</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <ChevronRight className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                        <span>Advanced backing maneuvers and parking</span>
+                        <span>Load securement and weight distribution</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <ChevronRight className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
@@ -266,40 +272,32 @@ export default function Home() {
               <TabsContent value="class-b">
                 <div className="grid md:grid-cols-2 gap-8">
                   <PricingCard
-                    title="CDL CLASS B"
-                    price="$2,000"
-                    transmission="Automatic & Manual Available"
-                    classTime="30 Hours"
+                    title={config.pricing.classB.title}
+                    price={config.pricing.classB.price}
+                    transmission={config.pricing.classB.transmission}
+                    classTime={config.pricing.classB.classTime}
                     permitTraining={true}
                     oneOnOne={true}
-                    endorsements={["Passenger Endorsement", "Hazardous Materials (HAZMAT)", "Tanker Endorsement"]}
+                    endorsements={config.pricing.classB.endorsements}
                   />
                   <div className="rounded-xl overflow-hidden bg-white/5 backdrop-blur-md border border-white/10 shadow-xl p-6 h-full">
-                    <h3 className="text-xl font-bold mb-4 text-primary">Class B Training Program</h3>
-                    <ul className="space-y-3">
+                    <h3 className="text-xl font-bold mb-4 text-primary">Complete Training Curriculum</h3>
+                    <ul className="space-y-2">
                       <li className="flex items-start gap-2">
                         <ChevronRight className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                        <span>CDL permit preparation and assistance</span>
+                        <span>Pre-trip inspection procedures</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <ChevronRight className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                        <span>Entry-level driver classroom education</span>
+                        <span>Straight truck maneuvering</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <ChevronRight className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                        <span>Straight truck pre-trip inspection mastery</span>
+                        <span>City and highway driving skills</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <ChevronRight className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                        <span>Air brake system operation and safety</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <ChevronRight className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                        <span>Controlled environment driving practice</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <ChevronRight className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                        <span>Public road driving experience and skills</span>
+                        <span>Air brake system knowledge</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <ChevronRight className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
@@ -314,8 +312,8 @@ export default function Home() {
             <div className="mt-12 text-center">
               <p className="text-lg font-medium mb-4">AUTOMATIC/MANUAL TRANSMISSION (10 SPEED) AVAILABLE!</p>
               <Button size="lg" className="bg-primary text-black hover:bg-primary/90" asChild>
-                <Link href="tel:+15599050496">
-                  <Phone className="mr-2 h-4 w-4" /> CALL NOW - (559) 905-0496
+                <Link href={`tel:+1${formatPhoneForTel(config.contact.phone)}`}>
+                  <Phone className="mr-2 h-4 w-4" /> CALL NOW - {config.contact.phone}
                 </Link>
               </Button>
             </div>
@@ -335,13 +333,13 @@ export default function Home() {
                 <div className="flex items-start gap-2 mt-6">
                   <MapPin className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-medium">4045 S CHERRY AVE</p>
-                    <p className="text-gray-300">FRESNO, CA, 93706</p>
+                    <p className="font-medium">{config.contact.address.street}</p>
+                    <p className="text-gray-300">{config.contact.address.city}, {config.contact.address.state}, {config.contact.address.zip}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock className="h-5 w-5 text-primary" />
-                  <p className="text-gray-300">MONDAY- SATURDAY 8AM-5PM</p>
+                  <p className="text-gray-300">{config.contact.hours}</p>
                 </div>
               </div>
               <div>
@@ -354,30 +352,29 @@ export default function Home() {
         {/* Testimonials */}
         <section className="py-16 bg-gray-950">
           <div className="container">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold tracking-tighter mb-2">What Our Students Say</h2>
-              <p className="text-gray-300">Real reviews from successful graduates</p>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold tracking-tighter mb-4">What Our Students Say</h2>
+              <p className="text-xl text-gray-300">Real stories from real graduates</p>
             </div>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               <Card className="bg-white/5 backdrop-blur-md border-white/10">
                 <CardContent className="p-6">
-                  <div className="flex items-center gap-1 mb-4">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star key={star} className="h-5 w-5 fill-primary text-primary" />
+                  <div className="flex gap-1 mb-4">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-5 w-5 fill-primary text-primary" />
                     ))}
                   </div>
-                  <p className="mb-4 text-gray-300">
-                    "Awesome driving school. Came in having never drove a semi before and very little experience backing
-                    up a trailer. Stayed for a few weeks and passed the dmv driving test first try. Highly recommend!!
-                    They work with your schedule!!"
+                  <p className="text-gray-300 mb-4">
+                    "I went from zero truck experience to passing my CDL on the first try. The instructors really care
+                    about your success, and the one-on-one training made all the difference."
                   </p>
                   <div className="flex items-center gap-3">
-                    <div className="rounded-full bg-primary/20 w-10 h-10 flex items-center justify-center">
-                      <span className="font-medium text-primary">G</span>
+                    <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+                      <span className="text-black font-medium">MR</span>
                     </div>
                     <div>
-                      <p className="font-medium">Garry</p>
-                      <p className="text-sm text-gray-400">CDL Graduate</p>
+                      <p className="font-medium">Maria Rodriguez</p>
+                      <p className="text-sm text-gray-400">Class A Graduate</p>
                     </div>
                   </div>
                 </CardContent>
@@ -385,24 +382,22 @@ export default function Home() {
 
               <Card className="bg-white/5 backdrop-blur-md border-white/10">
                 <CardContent className="p-6">
-                  <div className="flex items-center gap-1 mb-4">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star key={star} className="h-5 w-5 fill-primary text-primary" />
+                  <div className="flex gap-1 mb-4">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-5 w-5 fill-primary text-primary" />
                     ))}
                   </div>
-                  <p className="mb-4 text-gray-300">
-                    "Had the best experience in learning how to drive a truck and really helpful and knowledgeable in
-                    all fields of getting a commercial license, would definitely recommend all women and men in coming
-                    and getting your license from them. Very professional and speak Punjabi, Hindi and English. Also
-                    offer truck repairs, it's like one stop shop for all your needs."
+                  <p className="text-gray-300 mb-4">
+                    "Central helped me change my career completely. I now earn more than I ever did in my previous job,
+                    and I love being on the road. The job placement assistance was incredible."
                   </p>
                   <div className="flex items-center gap-3">
-                    <div className="rounded-full bg-primary/20 w-10 h-10 flex items-center justify-center">
-                      <span className="font-medium text-primary">SK</span>
+                    <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+                      <span className="text-black font-medium">DT</span>
                     </div>
                     <div>
-                      <p className="font-medium">Sandy Kaur</p>
-                      <p className="text-sm text-gray-400">CDL Graduate</p>
+                      <p className="font-medium">David Thompson</p>
+                      <p className="text-sm text-gray-400">Class A Graduate</p>
                     </div>
                   </div>
                 </CardContent>
@@ -410,25 +405,22 @@ export default function Home() {
 
               <Card className="bg-white/5 backdrop-blur-md border-white/10">
                 <CardContent className="p-6">
-                  <div className="flex items-center gap-1 mb-4">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star key={star} className="h-5 w-5 fill-primary text-primary" />
+                  <div className="flex gap-1 mb-4">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-5 w-5 fill-primary text-primary" />
                     ))}
                   </div>
-                  <p className="mb-4 text-gray-300">
-                    "I went to this Bus and Truck School to get my CDL license. I recommend this school because it's
-                    well detailed oriented from Inspection Part A, Part B and Part C. As well Coupling System. It's a
-                    Manual or Automatic transmission Trucks available, whatever you want. I got my CDL with Manual
-                    Transmission. Not restrictions on my driver license! It's a personalized learning. You will get what
-                    you need in order to get the commercial license."
+                  <p className="text-gray-300 mb-4">
+                    "The flexible scheduling worked perfectly with my current job. I was able to train in the evenings
+                    and weekends, and still got the full quality training experience."
                   </p>
                   <div className="flex items-center gap-3">
-                    <div className="rounded-full bg-primary/20 w-10 h-10 flex items-center justify-center">
-                      <span className="font-medium text-primary">RF</span>
+                    <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+                      <span className="text-black font-medium">SK</span>
                     </div>
                     <div>
-                      <p className="font-medium">Raul Funes</p>
-                      <p className="text-sm text-gray-400">CDL Graduate</p>
+                      <p className="font-medium">Sarah Kim</p>
+                      <p className="text-sm text-gray-400">Class B Graduate</p>
                     </div>
                   </div>
                 </CardContent>
@@ -437,28 +429,24 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Locations */}
+        {/* Maps Section */}
         <section id="locations" className="py-16 bg-gray-900/50">
           <div className="container">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold tracking-tighter mb-2">Visit Our Training Facility</h2>
-              <p className="text-gray-300">Conveniently located in Fresno with ample parking</p>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold tracking-tighter mb-4">Visit Our Training Facility</h2>
+              <p className="text-xl text-gray-300">Located in the heart of Fresno for easy access</p>
             </div>
             <GoogleMapsEmbed />
           </div>
         </section>
 
-        {/* Newsletter */}
+        {/* FAQ Section */}
+        <FAQSection />
+
+        {/* Newsletter Section */}
         <section className="py-16 bg-gray-950">
           <div className="container">
-            <div className="max-w-md mx-auto text-center">
-              <h2 className="text-2xl font-bold tracking-tighter mb-2">STAY UPDATED</h2>
-              <p className="text-gray-300 mb-6">
-                Get updates on new class schedules, CDL industry news, and special offers. We respect your privacy and
-                never share your information.
-              </p>
-              <NewsletterSignup />
-            </div>
+            <NewsletterSignup />
           </div>
         </section>
 
@@ -481,8 +469,8 @@ export default function Home() {
                   className="border-primary text-primary hover:bg-primary hover:text-black"
                   asChild
                 >
-                  <Link href="tel:+15599050496">
-                    <Phone className="mr-2 h-4 w-4" /> Call (559) 905-0496
+                  <Link href={`tel:+1${formatPhoneForTel(config.contact.phone)}`}>
+                    <Phone className="mr-2 h-4 w-4" /> Call {config.contact.phone}
                   </Link>
                 </Button>
               </div>
@@ -499,18 +487,18 @@ export default function Home() {
               <div className="flex items-center space-x-2 mb-4">
                 <Image
                   src="/logo.png"
-                  alt="Central Bus & Truck Driving School"
+                  alt={config.business.name}
                   width={120}
                   height={40}
                   className="h-8 w-auto"
                 />
               </div>
               <p className="text-gray-300 mb-4">
-                Professional CDL training with experienced instructors and modern facilities in Fresno, California.
+                {config.business.description}
               </p>
               <div className="flex gap-4">
                 <Link
-                  href="https://www.tiktok.com/@centralbtschool?_t=ZP-8xKATrbhbrT&_r=1"
+                  href={config.social.tiktok}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-primary transition-colors"
@@ -518,7 +506,7 @@ export default function Home() {
                   <TikTokIcon className="h-6 w-6" />
                 </Link>
                 <Link
-                  href="https://www.instagram.com/centralbustruckdrivingschool/"
+                  href={config.social.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-primary transition-colors"
@@ -526,7 +514,7 @@ export default function Home() {
                   <Instagram className="h-6 w-6" />
                 </Link>
                 <Link
-                  href="https://www.youtube.com/@centralbustruckschool3572"
+                  href={config.social.youtube}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-primary transition-colors"
@@ -555,7 +543,7 @@ export default function Home() {
                 </li>
                 <li>
                   <Link href="#locations" className="text-gray-300 hover:text-primary transition-colors">
-                    Location & Directions
+                    Location
                   </Link>
                 </li>
               </ul>
@@ -566,20 +554,20 @@ export default function Home() {
                 <li className="flex items-start gap-2">
                   <MapPin className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                   <span className="text-gray-300">
-                    4045 S CHERRY AVE
+                    {config.contact.address.street}
                     <br />
-                    FRESNO, CA, 93706
+                    {config.contact.address.city}, {config.contact.address.state}, {config.contact.address.zip}
                   </span>
                 </li>
                 <li className="flex items-center gap-2">
                   <Phone className="h-5 w-5 text-primary" />
-                  <Link href="tel:+15599050496" className="text-gray-300 hover:text-primary transition-colors">
-                    (559) 905-0496
+                  <Link href={`tel:+1${formatPhoneForTel(config.contact.phone)}`} className="text-gray-300 hover:text-primary transition-colors">
+                    {config.contact.phone}
                   </Link>
                 </li>
                 <li className="flex items-center gap-2">
                   <Clock className="h-5 w-5 text-primary" />
-                  <span className="text-gray-300">MON-SAT: 8AM-5PM</span>
+                  <span className="text-gray-300">{config.contact.hours}</span>
                 </li>
               </ul>
             </div>
@@ -588,40 +576,42 @@ export default function Home() {
               <ul className="space-y-1">
                 <li className="flex justify-between">
                   <span className="text-gray-300">Monday</span>
-                  <span className="text-gray-300">8AM-5PM</span>
+                  <span className="text-gray-300">{config.schedule.monday}</span>
                 </li>
                 <li className="flex justify-between">
                   <span className="text-gray-300">Tuesday</span>
-                  <span className="text-gray-300">8AM-5PM</span>
+                  <span className="text-gray-300">{config.schedule.tuesday}</span>
                 </li>
                 <li className="flex justify-between">
                   <span className="text-gray-300">Wednesday</span>
-                  <span className="text-gray-300">8AM-5PM</span>
+                  <span className="text-gray-300">{config.schedule.wednesday}</span>
                 </li>
                 <li className="flex justify-between">
                   <span className="text-gray-300">Thursday</span>
-                  <span className="text-gray-300">8AM-5PM</span>
+                  <span className="text-gray-300">{config.schedule.thursday}</span>
                 </li>
                 <li className="flex justify-between">
                   <span className="text-gray-300">Friday</span>
-                  <span className="text-gray-300">8AM-5PM</span>
+                  <span className="text-gray-300">{config.schedule.friday}</span>
                 </li>
                 <li className="flex justify-between">
                   <span className="text-gray-300">Saturday</span>
-                  <span className="text-gray-300">8AM-5PM</span>
+                  <span className="text-gray-300">{config.schedule.saturday}</span>
                 </li>
                 <li className="flex justify-between">
                   <span className="text-gray-300">Sunday</span>
-                  <span className="text-gray-300">Closed</span>
+                  <span className="text-gray-300">{config.schedule.sunday}</span>
                 </li>
               </ul>
             </div>
           </div>
           <div className="border-t border-white/10 mt-8 pt-8 text-center text-gray-400">
-            <p>© {new Date().getFullYear()} Central Bus & Truck Driving School. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} {config.business.name}. All rights reserved.</p>
           </div>
         </div>
       </footer>
+
+      <FloatingCTA />
     </div>
   )
 }

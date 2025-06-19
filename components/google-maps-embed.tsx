@@ -4,10 +4,20 @@ import { useState } from "react"
 import { MapPin, Phone, ExternalLink, X, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { useSiteConfig } from "@/lib/use-site-config"
 
 export function GoogleMapsEmbed() {
   const [showModal, setShowModal] = useState(false)
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+  const { config } = useSiteConfig()
+
+  const formatPhoneForTel = (phone: string) => {
+    return phone.replace(/[^\d]/g, "")
+  }
+
+  const getFullAddress = () => {
+    return `${config.contact.address.street}, ${config.contact.address.city}, ${config.contact.address.state}, ${config.contact.address.zip}`
+  }
 
   // Fallback if API key is not available
   if (!apiKey) {
@@ -18,7 +28,7 @@ export function GoogleMapsEmbed() {
           <p className="mb-2">Google Maps integration requires an API key</p>
           <Button className="bg-primary text-black hover:bg-primary/90" asChild>
             <Link
-              href="https://maps.google.com/?q=4045+S+CHERRY+AVE,+FRESNO,+CA,+93706"
+              href={`https://maps.google.com/?q=${encodeURIComponent(getFullAddress())}`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -36,7 +46,7 @@ export function GoogleMapsEmbed() {
       <div className="rounded-xl overflow-hidden h-[400px] relative">
         {/* Google Maps Embed */}
         <iframe
-          src={`https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=4045+S+CHERRY+AVE,+FRESNO,+CA,+93706&zoom=15`}
+          src={`https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodeURIComponent(getFullAddress())}&zoom=15`}
           width="100%"
           height="100%"
           style={{ border: 0 }}
@@ -45,17 +55,20 @@ export function GoogleMapsEmbed() {
           referrerPolicy="no-referrer-when-downgrade"
           className="rounded-xl"
         />
-
-        {/* Info Button */}
-        <button
-          onClick={() => setShowModal(true)}
-          className="absolute top-4 right-4 bg-primary text-black p-3 rounded-full shadow-lg hover:bg-primary/90 transition-colors"
-        >
-          <MapPin className="h-5 w-5" />
-        </button>
+        
+        {/* Overlay button */}
+        <div className="absolute top-4 right-4">
+          <Button
+            onClick={() => setShowModal(true)}
+            className="bg-black/70 text-white hover:bg-black/90 backdrop-blur-sm"
+            size="sm"
+          >
+            <MapPin className="mr-2 h-4 w-4" />
+            Get Directions
+          </Button>
+        </div>
       </div>
 
-      {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-gray-900 border border-white/10 p-6 rounded-xl max-w-sm w-full relative">
@@ -68,19 +81,19 @@ export function GoogleMapsEmbed() {
 
             <div className="text-center">
               <MapPin className="h-12 w-12 text-primary mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-4">Central Bus & Truck Driving School</h3>
+              <h3 className="text-xl font-bold mb-4">{config.business.name}</h3>
               <div className="space-y-3 mb-6">
-                <p className="text-gray-300">4045 S CHERRY AVE</p>
-                <p className="text-gray-300">FRESNO, CA, 93706</p>
+                <p className="text-gray-300">{config.contact.address.street}</p>
+                <p className="text-gray-300">{config.contact.address.city}, {config.contact.address.state}, {config.contact.address.zip}</p>
                 <div className="flex items-center justify-center gap-2">
                   <Phone className="h-4 w-4 text-primary" />
-                  <p className="text-gray-300">(559) 905-0496</p>
+                  <p className="text-gray-300">{config.contact.phone}</p>
                 </div>
               </div>
               <div className="space-y-3">
                 <Button className="w-full bg-primary text-black hover:bg-primary/90" asChild>
                   <Link
-                    href="https://maps.google.com/?q=4045+S+CHERRY+AVE,+FRESNO,+CA,+93706"
+                    href={`https://maps.google.com/?q=${encodeURIComponent(getFullAddress())}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -93,7 +106,7 @@ export function GoogleMapsEmbed() {
                   className="w-full border-primary text-primary hover:bg-primary hover:text-black"
                   asChild
                 >
-                  <Link href="tel:+15599050496">
+                  <Link href={`tel:+1${formatPhoneForTel(config.contact.phone)}`}>
                     <Phone className="mr-2 h-4 w-4" />
                     Call Now
                   </Link>

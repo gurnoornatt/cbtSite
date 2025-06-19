@@ -4,10 +4,12 @@ import { useState, useEffect } from "react"
 import { Phone, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { useSiteConfig } from "@/lib/use-site-config"
 
 export function FloatingCTA() {
   const [isVisible, setIsVisible] = useState(false)
   const [isMinimized, setIsMinimized] = useState(false)
+  const { config } = useSiteConfig()
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -16,6 +18,10 @@ export function FloatingCTA() {
 
     return () => clearTimeout(timer)
   }, [])
+
+  const formatPhoneForTel = (phone: string) => {
+    return phone.replace(/[^\d]/g, "")
+  }
 
   if (!isVisible) return null
 
@@ -33,8 +39,8 @@ export function FloatingCTA() {
             <p className="font-bold text-sm mb-2">🚛 Ready to Start Your New Career?</p>
             <p className="text-xs mb-3">Call now for a free consultation!</p>
             <Button size="sm" className="bg-black text-primary hover:bg-gray-800 w-full" asChild>
-              <Link href="tel:+15599050496">
-                <Phone className="mr-2 h-4 w-4" /> Call (559) 905-0496
+              <Link href={`tel:+1${formatPhoneForTel(config.contact.phone)}`}>
+                <Phone className="mr-2 h-4 w-4" /> Call {config.contact.phone}
               </Link>
             </Button>
           </div>

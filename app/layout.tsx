@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/placeholder.svg?height=630&width=1200",
+        url: "/logo.png",
         width: 1200,
         height: 630,
         alt: "Central Truck Driving School - CDL Training in Fresno",
@@ -43,6 +43,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://centralcdl.com",
   },
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
 }
 
 export default function RootLayout({
@@ -52,7 +56,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head />
+      <head>
+        <link rel="icon" href="/logo.png" sizes="any" />
+        <link rel="apple-touch-icon" href="/logo.png" />
+      </head>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           {children}
