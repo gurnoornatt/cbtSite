@@ -74,7 +74,7 @@ export const defaultSiteConfig: SiteConfig = {
     },
     classB: {
       title: "CDL CLASS B",
-      price: "$2,000",
+      price: "$2,600",
       transmission: "Automatic & Manual Available",
       classTime: "30 Hours",
       endorsements: [
@@ -103,4 +103,4 @@ export const defaultSiteConfig: SiteConfig = {
     saturday: "8AM-5PM",
     sunday: "Closed"
   }
-} 
+}
